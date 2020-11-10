@@ -1,0 +1,9 @@
+{
+	"applications": {},
+	"bootstrapPlugins": {
+		"s4d425_flp_plugin_00": {
+			"component": "s4d425.flp.plugin00",
+			"url": "../../../../../"
+		}
+	}
+}
