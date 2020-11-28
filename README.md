@@ -47,3 +47,27 @@
         text = 'Discount could not be determined'
       ).
     ENDIF.
+    
+## Exercise 14  
+  
+    SELECT SINGLE FROM d425_i_cust##tp 
+                FIELDS zz1_discount_##_g##
+                 WHERE id = @customerinvoice##-customerid
+                  INTO @customerinvoice##-discount.
+    IF sy-subrc = 0.
+    * old:
+    * customerinvoice##-discountamount_v = ( customerinvoice##-amount_v * customerinvoice##-discount ) / 100.
+    * new:
+      customerinvoice##-discountamount_v = 
+        zz1_customer_functions_##=>calc_discount_amount(
+          amount = customerinvoice##-amount_v
+          discount = customerinvoice##-discount
+        ).
+      customerinvoice##-discountamount_c = customerinvoice##-amount_c.
+    ELSE.
+      message = VALUE #(
+        severity = co_severity-error
+        text = 'Discount could not be determined'
+      ).
+    ENDIF.
+
