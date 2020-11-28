@@ -71,3 +71,11 @@
       ).
     ENDIF.
 
+## Exercise 21 
+
+    <form:SimpleForm id="weightForm" title="Total" layout="ResponsiveGridLayout" minWidth="1024" maxContainerCols="2" 
+                     class="sapUiForceWidthAuto sapUiResponsiveMargin" labelSpanL="3" labelSpanM="3" emptySpanL="5" 
+                     emptySpanM="5" columnsL="1" columnsM="1">
+      <Label id="weightLabel" text= "Weight"/>
+      <Text  id="weightTotal" text="{WeightTotal} {WeightUnit}"/>
+    </form:SimpleForm>
