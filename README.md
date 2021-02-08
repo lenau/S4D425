@@ -3,9 +3,9 @@
 ## Exercise 4
 
 1. Import the file **s4d425_flp_plugin_00.zip** and replace **00** with your group number **##** in the files:
-* Component.js
-* fioriSandboxConfig.json
-* manifest.json (2 times!) 
+   * Component.js
+   * fioriSandboxConfig.json
+   * manifest.json (2 times!) 
 1. **Task 2 - 4.** Test your plugin within the SAP Fiori launchpad sandbox environment
 1. **Task 3 - 4.** Deploy the SAP Fiori Launchpad Plugin to the ABAP S4D System
 1. **Task 4** Activate the Deployed Plugin for Your User
