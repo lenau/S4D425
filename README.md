@@ -24,7 +24,7 @@
     
     * set Customer Name
     IF customerinvoice##-customerid IS NOT INITIAL.
-      SELECT SINGLE FROM d425_i_cust##tp 
+      SELECT SINGLE FROM d425_i_cust## 
                   FIELDS name
                    WHERE id = @customerinvoice##-customerid
                     INTO @customerinvoice##-customername.
@@ -45,7 +45,7 @@
 **Label**: Apply Customer Discount
 **Identifier**: ApplyCustomerDiscount
     
-    SELECT SINGLE FROM d425_i_cust##tp 
+    SELECT SINGLE FROM d425_i_cust## 
                 FIELDS zz1_discount_##_g##
                  WHERE id = @customerinvoice##-customerid
                   INTO @customerinvoice##-discount.
@@ -61,7 +61,7 @@
     
 ## Exercise 14  
   
-    SELECT SINGLE FROM d425_i_cust##tp 
+    SELECT SINGLE FROM d425_i_cust## 
                 FIELDS zz1_discount_##_g##
                  WHERE id = @customerinvoice##-customerid
                   INTO @customerinvoice##-discount.
