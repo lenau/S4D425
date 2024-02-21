@@ -106,6 +106,135 @@
         local_last_changed : abp_locinst_lastchange_tstmpl;  
     }
 
+## Exercise 20  
+
+    @Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Complaint',
+    typeNamePlural: 'Complaints',
+    title: {
+      type: #STANDARD,
+      label: 'Complaint',
+      value: 'ComplaintID'
+    }
+  }
+}
+annotate view ZC_425_COMPLAINTXX with
+{
+  @UI.facet: [ {
+    id: 'idCollection',
+    type: #COLLECTION,
+    label: 'Complaint',
+    position: 10
+  },
+  {
+    id: 'idIdentification',
+    parentId: 'idCollection',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    position: 10
+  } ]
+  @UI.hidden: true
+  UUID;
+
+  @UI.lineItem: [ {
+    position: 20 ,
+    importance: #HIGH,
+    label: 'Complaint ID'
+  } ]
+  @UI.identification: [ {
+    position: 20 ,
+    label: 'Complaint ID'
+  } ]
+  @UI.selectionField: [ {
+    position: 20
+  } ]
+  ComplaintID;
+
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #HIGH,
+    label: 'Invoice ID'
+  } ]
+  @UI.identification: [ {
+    position: 30 ,
+    label: 'Invoice ID'
+  } ]
+  InvoiceID;
+
+  @UI.lineItem: [ {
+    position: 40 ,
+    importance: #HIGH,
+    label: 'Customer ID'
+  } ]
+  @UI.identification: [ {
+    position: 40 ,
+    label: 'Customer ID'
+  } ]
+  CustomerID;
+
+  @UI.lineItem: [ {
+    position: 50 ,
+    importance: #HIGH,
+    label: 'Customer Name'
+  } ]
+  @UI.identification: [ {
+    position: 50 ,
+    label: 'Customer Name'
+  } ]
+  CustomerName;
+
+  @UI.lineItem: [ {
+    position: 60 ,
+    importance: #HIGH,
+    label: 'Reason'
+  } ]
+  @UI.identification: [ {
+    position: 60 ,
+    label: 'Reason'
+  } ]
+  Reason;
+
+  @UI.lineItem: [ {
+    position: 70 ,
+    importance: #HIGH,
+    label: 'Action'
+  } ]
+  @UI.identification: [ {
+    position: 70 ,
+    label: 'Action'
+  } ]
+  Action;
+
+  @UI.lineItem: [ {
+    position: 80 ,
+    importance: #HIGH,
+    label: 'Closed'
+  } ]
+  @UI.identification: [ {
+    position: 80,
+    label: 'Closed'
+  } ]
+  Closed;
+
+  @UI.hidden: true
+  CreatedBy;
+
+  @UI.hidden: true
+  CreatedAt;
+
+  @UI.hidden: true
+  LastChangedBy;
+
+  @UI.hidden: true
+  LocalLastChanged;
+}
+
+
+
+    
+
 
 
 
