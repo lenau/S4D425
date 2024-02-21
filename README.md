@@ -108,6 +108,7 @@
 
 ## Exercise 20  
 
+````  
 @Metadata.layer: #CUSTOMER
 @UI: {
   headerInfo: {
@@ -230,6 +231,7 @@ annotate view ZC_425_COMPLAINT## with
   @UI.hidden: true
   LocalLastChanged;
 }
+````
 
     
 
