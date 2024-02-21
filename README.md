@@ -89,7 +89,7 @@
     @AbapCatalog.tableCategory : #TRANSPARENT
     @AbapCatalog.deliveryClass : #A
     @AbapCatalog.dataMaintenance : #RESTRICTED
-    define table z425_complaintxx {
+    define table z425_complaint## {
         key client         : abap.clnt not null;  
         key uuid           : sysuuid_x16 not null;  
         complaint_id       : abap.numc(10) not null;  
@@ -108,8 +108,7 @@
 
 ## Exercise 20  
 
-````
-    @Metadata.layer: #CUSTOMER
+@Metadata.layer: #CUSTOMER
 @UI: {
   headerInfo: {
     typeName: 'Complaint',
@@ -121,7 +120,7 @@
     }
   }
 }
-annotate view ZC_425_COMPLAINTXX with
+annotate view ZC_425_COMPLAINT## with
 {
   @UI.facet: [ {
     id: 'idCollection',
@@ -231,7 +230,7 @@ annotate view ZC_425_COMPLAINTXX with
   @UI.hidden: true
   LocalLastChanged;
 }
-````
+
     
 
     
