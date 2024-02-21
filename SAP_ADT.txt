@@ -1,0 +1,39 @@
+{
+  "binding": {
+    "env": "cf",
+    "id": "04e32403-5733-4fed-affc-4836811a6191",
+    "type": "oauth",
+    "version": "1.0.1.1"
+  },
+  "catalogs": {
+    "abap": {
+      "path": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2",
+      "type": "sap_abap_catalog_v1"
+    }
+  },
+  "endpoints": {
+    "abap": "https://71d05589-8083-40ff-ab68-bfd5533cb3ea.abap.eu10.hana.ondemand.com"
+  },
+  "preserve_host_header": true,
+  "sap.cloud.service": "com.sap.cloud.abap",
+  "systemid": "H01",
+  "uaa": {
+    "apiurl": "https://api.authentication.eu10.hana.ondemand.com",
+    "clientid": "sb-xs-71d05589-8083-40ff-ab68-bfd5533cb3ea!b120967|xsuaa-abapcp-prod-eu10!b4584",
+    "clientsecret": "04e32403-5733-4fed-affc-4836811a6191$jd1vu6NwqqTAGRfr4oTwALFiO5ywmft7DW24bKwPxgo=",
+    "credential-type": "binding-secret",
+    "identityzone": "ksyt6d7m1dc68g7x",
+    "identityzoneid": "05bb8fdd-d89d-4f2d-b218-c375fcdeff1c",
+    "sburl": "https://internal-xsuaa.authentication.eu10.hana.ondemand.com",
+    "serviceInstanceId": "71d05589-8083-40ff-ab68-bfd5533cb3ea",
+    "subaccountid": "05bb8fdd-d89d-4f2d-b218-c375fcdeff1c",
+    "tenantid": "05bb8fdd-d89d-4f2d-b218-c375fcdeff1c",
+    "tenantmode": "dedicated",
+    "uaadomain": "authentication.eu10.hana.ondemand.com",
+    "url": "https://ksyt6d7m1dc68g7x.authentication.eu10.hana.ondemand.com",
+    "verificationkey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn9AyECTvwpT4ZDDirUr9\n5eufx9EeSdRoi305ludqb7zDSnf8dEy8n7BMH9P4fg7WlTXH0KXBcVyX0uu7Hhx9\nqeGg9eMlyJFsPFNQf8kr/VZRWPLXGp/zzzpM6cOt0AKgBGsJZsVhS6u+YT62+fnQ\nhRaA8WysXQeW3lP5mzQbxIymYSOP50ZNOZM7G8P0WiPXAuyLYJyd1YCZG0fnEEuE\nprCIIO/xGB7u+lKZAfEzU8boUCQhWNAW/AxhqdjsMy+Lb9n3I7AepsqaQwSvV4w/\nb/ZTK0U7CKwcOyGp+2aZ+jsPndrP5/ni864t28FrnWsDNqWXsOtiekIKJbO32aK1\n0QIDAQAB\n-----END PUBLIC KEY-----",
+    "xsappname": "xs-71d05589-8083-40ff-ab68-bfd5533cb3ea!b120967|xsuaa-abapcp-prod-eu10!b4584",
+    "zoneid": "05bb8fdd-d89d-4f2d-b218-c375fcdeff1c"
+  },
+  "url": "https://71d05589-8083-40ff-ab68-bfd5533cb3ea.abap.eu10.hana.ondemand.com"
+}
