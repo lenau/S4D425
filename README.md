@@ -82,6 +82,34 @@
       ).
     ENDIF.
 
+## Exercise 18  
+
+    @EndUserText.label : 'Customer complaints about invoices'
+    @AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
+    @AbapCatalog.tableCategory : #TRANSPARENT
+    @AbapCatalog.deliveryClass : #A
+    @AbapCatalog.dataMaintenance : #RESTRICTED
+    define table z425_complaintxx {
+        key client         : abap.clnt not null;  
+        key uuid           : sysuuid_x16 not null;  
+        complaint_id       : abap.numc(10) not null;  
+        invoice_id         : abap.numc(10);  
+        customer_id        : abap.numc(8);  
+        customer_name      : abap.char(25);  
+        reason             : abap.char(256);  
+        action             : abap.char(256);  
+        closed             : abap_boolean;  
+        created_by         : syuname;  
+        created_at         : timestampl;  
+        last_changed_by    : syuname;  
+        last_changed       : abp_lastchange_tstmpl;  
+        local_last_changed : abp_locinst_lastchange_tstmpl;  
+    }
+
+
+
+
+  
 <!--- ## Exercise 21 
 
     <form:SimpleForm id="weightForm" title="Total" layout="ResponsiveGridLayout" minWidth="1024" maxContainerCols="2" 
