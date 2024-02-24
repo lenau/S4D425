@@ -1,0 +1,297 @@
+@EndUserText.label: 'Custom entity for invoices from S4D'
+@ObjectModel.query.implementedBy: 'ABAP:ZCL_CE_D425_INVOICES_XX'
+define custom entity ZCE_D425_INVOICES_XX
+{
+  key SAP_UUID      : sysuuid_x16;
+      ID            : abap.numc( 10 );
+      CUSTOMER_ID   : abap.numc( 8 );
+      CUSTOMER_NAME : abap.char( 25 );
+      @Semantics.amount.currencyCode: 'AMOUNT_C'
+      AMOUNT_V      : abap.curr( 9, 2 );
+      @Semantics.currencyCode: true
+      AMOUNT_C      : abap.cuky;
+}
+
+
+CLASS zcl_ce_d425_invoices_xx DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+    INTERFACES if_rap_query_provider.
+    TYPES tt_business_data TYPE TABLE OF zsc_d425_invoices_xx=>tys_zz_1_customerinvoicexxtype.
+
+    METHODS get_invoices
+      IMPORTING
+        it_filter_cond   TYPE if_rap_query_filter=>tt_name_range_pairs   OPTIONAL
+        iv_top           TYPE i OPTIONAL
+        iv_skip          TYPE i OPTIONAL
+      EXPORTING
+        et_business_data TYPE  tt_business_data
+      RAISING
+        /iwbep/cx_cp_remote
+        /iwbep/cx_gateway
+        cx_web_http_client_error
+        cx_http_dest_provider_error.
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+
+CLASS zcl_ce_d425_invoices_xx IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    DATA lt_business_data TYPE tt_business_data.
+    DATA lt_filter_conditions  TYPE if_rap_query_filter=>tt_name_range_pairs.
+    DATA lt_ranges_table TYPE if_rap_query_filter=>tt_range_option.
+
+    lt_ranges_table = VALUE #( (  sign = 'I' option = 'GE' low = '1000' ) ).
+    lt_filter_conditions = VALUE #( ( name = 'ID'  range = lt_ranges_table ) ).
+
+    TRY.
+        me->get_invoices(
+          EXPORTING
+            it_filter_cond    = lt_filter_conditions
+            iv_top               =  3
+            iv_skip              =  1
+          IMPORTING
+            et_business_data  = lt_business_data
+          ) .
+        out->write( lt_business_data ).
+      CATCH cx_root INTO DATA(lx_exception).
+        out->write( cl_message_helper=>get_latest_t100_exception( lx_exception )->if_message~get_longtext( ) ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD get_invoices.
+    DATA: lo_root_filter_node TYPE REF TO /iwbep/if_cp_filter_node.
+
+    " Create http client
+    DATA(lo_http_destination) =
+          cl_http_destination_provider=>create_by_cloud_destination( i_name = 'S4D_100'
+                                                                     i_authn_mode = if_a4c_cp_service=>service_specific ).
+
+    "create HTTP client by destination
+    DATA(lo_http_client) = cl_web_http_client_manager=>create_by_http_destination( lo_http_destination ) .
+
+
+    DATA(lo_odata_client_proxy) = /iwbep/cl_cp_factory_remote=>create_v2_remote_proxy(
+      EXPORTING
+        is_proxy_model_key       = VALUE #( repository_id       = 'DEFAULT'
+                                            proxy_model_id      = 'ZSC_D425_INVOICES_XX'
+                                            proxy_model_version = '0001' )
+        io_http_client             = lo_http_client
+        iv_relative_service_root   = '/sap/opu/odata/sap/ZZ1_CUSTOMERINVOICEXX_CDS' ).
+
+    " Navigate to the resource and create a request for the read operation
+    DATA(lo_request) = lo_odata_client_proxy->create_resource_for_entity_set( 'ZZ_1_CUSTOMERINVOICEXX' )->create_request_for_read( ).
+
+    " Create the filter tree
+    DATA(lo_filter_factory) = lo_request->create_filter_factory( ).
+    LOOP AT it_filter_cond INTO DATA(ls_filter_cond).
+      DATA(lo_filter_node)  = lo_filter_factory->create_by_range( iv_property_path     = ls_filter_cond-name
+                                                              it_range     = ls_filter_cond-range ).
+      IF lo_root_filter_node IS INITIAL.
+        lo_root_filter_node = lo_filter_node.
+      ELSE.
+        lo_root_filter_node = lo_root_filter_node->and( lo_filter_node ).
+      ENDIF.
+    ENDLOOP.
+
+    IF lo_root_filter_node IS NOT INITIAL.
+      lo_request->set_filter( lo_root_filter_node ).
+    ENDIF.
+
+    IF iv_top > 0 .
+      lo_request->set_top( iv_top ).
+    ENDIF.
+
+    lo_request->set_skip( iv_skip ).
+
+    " Execute the request and retrieve the business data
+    DATA(lo_response) = lo_request->execute( ).
+    lo_response->get_business_data( IMPORTING et_business_data = et_business_data ).
+  ENDMETHOD.
+
+  METHOD if_rap_query_provider~select.
+    DATA lt_business_data TYPE tt_business_data.
+
+    DATA(lv_top)     = io_request->get_paging( )->get_page_size( ).
+    DATA(lv_skip)    = io_request->get_paging( )->get_offset( ).
+
+    DATA(lt_sort_order)    = io_request->get_sort_elements( ).
+
+    TRY.
+        DATA(lt_filter_conditions) = io_request->get_filter( )->get_as_ranges( ).
+
+        me->get_invoices(
+                 EXPORTING
+                   it_filter_cond    = lt_filter_conditions
+                   iv_top               = CONV i( lv_top )
+                   iv_skip              = CONV i( lv_skip )
+                 IMPORTING
+                   et_business_data  = lt_business_data
+                 ) .
+
+        io_response->set_total_number_of_records( lines( lt_business_data ) ).
+        io_response->set_data( lt_business_data ).
+
+      CATCH cx_root INTO DATA(lx_exception).
+        RAISE EXCEPTION TYPE zcx_rap_query_provider
+          EXPORTING
+            previous = lx_exception.
+    ENDTRY.
+  ENDMETHOD.
+ENDCLASS.
+
+
+
+managed implementation in class ZBP_R_425_COMPLAINTXX unique;
+strict ( 2 );
+with draft;
+define behavior for ZR_425_COMPLAINTXX alias Complaint
+persistent table z425_complaintxx
+draft table z425_compl_xx_d
+etag master LocalLastChanged
+lock master total etag LastChanged
+authorization master ( global )
+
+{
+  field ( readonly )
+  UUID,
+  LastChanged,
+  LocalLastChanged,
+  ComplaintID;
+
+  field ( numbering : managed )
+  UUID;
+
+
+  create;
+  update;
+  delete;
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for z425_complaintxx
+    {
+      UUID             = uuid;
+      ComplaintID      = complaint_id;
+      InvoiceID        = invoice_id;
+      CustomerID       = customer_id;
+      CustomerName     = customer_name;
+      Reason           = reason;
+      Action           = action;
+      Closed           = closed;
+      CreatedBy        = created_by;
+      CreatedAt        = created_at;
+      LastChangedBy    = last_changed_by;
+      LastChanged      = last_changed;
+      LocalLastChanged = local_last_changed;
+    }
+
+  determination CalculateComplaintID on save { create; }
+}
+
+
+
+
+
+
+CLASS lhc_complaint DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+    METHODS:
+      get_global_authorizations FOR GLOBAL AUTHORIZATION
+        IMPORTING
+        REQUEST requested_authorizations FOR Complaint
+        RESULT result,
+      CalculateComplaintID FOR DETERMINE ON SAVE
+        IMPORTING keys FOR Complaint~CalculateComplaintID.
+ENDCLASS.
+
+CLASS lhc_complaint IMPLEMENTATION.
+  METHOD get_global_authorizations.
+  ENDMETHOD.
+  METHOD CalculateComplaintID.
+    "Ensure idempotence
+    READ ENTITIES OF zr_425_complaintxx IN LOCAL MODE
+      ENTITY Complaint
+        FIELDS ( ComplaintID )
+        WITH CORRESPONDING #( keys )
+      RESULT DATA(complaints).
+
+    DELETE complaints WHERE ComplaintID IS NOT INITIAL.
+    CHECK complaints IS NOT INITIAL.
+
+    "Get max complaintID
+    SELECT SINGLE FROM z425_complaintxx FIELDS MAX( complaint_id ) INTO @DATA(max_complaint).
+
+    "update involved instances
+    MODIFY ENTITIES OF zr_425_complaintxx IN LOCAL MODE
+      ENTITY Complaint
+        UPDATE FIELDS ( ComplaintID )
+        WITH VALUE #( FOR complaint IN complaints INDEX INTO i (
+                           %tky      = complaint-%tky
+                           ComplaintID  = max_complaint + i ) )
+    REPORTED DATA(lt_reported).
+
+    "fill reported
+    reported = CORRESPONDING #( DEEP lt_reported ).
+  ENDMETHOD.
+
+ENDCLASS.
+
+
+
+@EndUserText.label: 'Service def for ZC_425_COMPLAINTXX'
+define service ZUI_425_COMPLAINTXX_O4 {
+  expose ZC_425_COMPLAINTXX   as Complaint;
+  expose ZCE_D425_INVOICES_XX as Invoice;
+}
+
+
+
+@AccessControl.authorizationCheck: #CHECK
+@Metadata.allowExtensions: true
+@EndUserText.label: 'Projection View for ZR_425_COMPLAINTXX'
+@ObjectModel.semanticKey: [ 'ComplaintID' ]
+@Search.searchable: true
+define root view entity ZC_425_COMPLAINTXX
+  provider contract transactional_query
+  as projection on ZR_425_COMPLAINTXX
+{
+  key UUID,
+      @Search.defaultSearchElement: true
+      @Search.fuzzinessThreshold: 0.90
+      ComplaintID,
+      @Consumption.valueHelpDefinition: [{
+        entity              :  { name: 'ZCE_D425_INVOICES_21',  element: 'ID' },
+        additionalBinding   : [{ localElement: 'CustomerID',    element: 'CUSTOMER_ID' },
+                               { localElement: 'CustomerName',  element: 'CUSTOMER_NAME' }]
+      }]
+      InvoiceID,
+      CustomerID,
+      CustomerName,
+      Reason,
+      Action,
+      Closed,
+      CreatedBy,
+      CreatedAt,
+      LastChangedBy,
+      LocalLastChanged
+
+}
+
+
+
+
+
+
