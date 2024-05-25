@@ -99,11 +99,13 @@
         reason             : abap.char(256);  
         action             : abap.char(256);  
         closed             : abap_boolean;  
-        created_by         : syuname;  
-        created_at         : timestampl;  
-        last_changed_by    : syuname;  
+        created_by         : abp_creation_user;  
+        created_at         : abp_creation_tstmpl;  
+        last_changed_by    : abp_lastchange_user;  
         last_changed       : abp_lastchange_tstmpl;  
-        local_last_changed : abp_locinst_lastchange_tstmpl;  
+        local_last_by      : abp_locinst_lastchange_user;  
+        local_last_changed : abp_locinst_lastchange_tstmpl;
+
     }
 
 ## Exercise 20  
