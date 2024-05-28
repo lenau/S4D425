@@ -231,6 +231,12 @@ annotate view ZC_425_COMPLAINT## with
   LastChangedBy;
 
   @UI.hidden: true
+  LastChanged;
+
+  @UI.hidden: true
+  LocalLastBy;
+
+  @UI.hidden: true
   LocalLastChanged;
 }
 ````
