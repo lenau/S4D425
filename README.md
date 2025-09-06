@@ -119,6 +119,8 @@
 
 ## Exercise 25 - Implement the Query Implementation Class of the Custom Entity  
 ```
+        DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
+        DATA(sort_order)            = io_request->get_sort_elements( ).
         lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
                  )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
         ...  
