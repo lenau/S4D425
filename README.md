@@ -42,7 +42,7 @@
     
 #### Action:
 
-**Label**: Apply Customer Discount
+**Label**: Apply Customer Discount  
 **Identifier**: ApplyCustomerDiscount
     
     SELECT SINGLE FROM d425_i_cust## 
