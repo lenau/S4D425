@@ -130,9 +130,80 @@
         io_response->set_data( lt_business_data ).
 ```
 
+```  
+  METHOD if_rap_query_provider~select.
+
+    TRY.
+
+        DATA(lo_request) =
+          /iwbep/cl_cp_factory_remote=>create_v2_remote_proxy(
+            EXPORTING
+              is_proxy_model_key = VALUE #( repository_id       = 'DEFAULT'
+                                            proxy_model_id      = 'ZSC_INVOICES_20'
+                                            proxy_model_version = '0001' )
+
+              io_http_client = cl_web_http_client_manager=>create_by_http_destination(
+                                 cl_http_destination_provider=>create_by_cloud_destination( 'S4D_100' ) )
+
+              iv_relative_service_root = '/sap/opu/odata/sap/ZZ1_CUSTOMERINVOICE20_CDS/'
+
+                )->create_resource_for_entity_set( 'ZZ_1_CUSTOMERINVOICE_20' )->create_request_for_read( ).
+
+        DATA(sort_order)            = io_request->get_sort_elements( ).
+        DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
+        lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
+                 )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
+
+        DATA root_filter_node TYPE REF TO /iwbep/if_cp_filter_node.
+        DATA(filter_factory) = lo_request->create_filter_factory( ).
+
+        LOOP AT filter_conditions INTO DATA(filter_condition).
+          DATA(filter_node)  = filter_factory->create_by_range( iv_property_path = filter_condition-name
+                                                                it_range         = filter_condition-range ).
+          IF root_filter_node IS INITIAL.
+            root_filter_node = filter_node.
+          ELSE.
+            root_filter_node = root_filter_node->and( filter_node ).
+          ENDIF.
+        ENDLOOP.
+
+        IF root_filter_node IS NOT INITIAL.
+          lo_request->set_filter( root_filter_node ).
+        ENDIF.
+
+        DATA business_data TYPE TABLE OF zcl_sc_invoices_20=>tys_zz_1_customerinvoice_20_ty.
+        DATA(response) = lo_request->execute( ).
+        response->get_business_data( IMPORTING et_business_data = business_data ).
+
+        io_response->set_total_number_of_records( lines( business_data ) ).
+        io_response->set_data( business_data ).
+
+      CATCH /iwbep/cx_cp_remote INTO DATA(lx_remote).
+        " Handle remote Exception
+        " It contains details about the problems of your http(s) connection
+
+      CATCH /iwbep/cx_gateway INTO DATA(lx_gateway).
+        " Handle Exception
+
+      CATCH cx_web_http_client_error INTO DATA(lx_web_http_client_error).
+        " Handle Exception
+        RAISE SHORTDUMP lx_web_http_client_error.
+
+
+      CATCH cx_http_dest_provider_error.
+        "handle exception
+
+      CATCH cx_rap_query_filter_no_range.
+        "handle exception
+
+    ENDTRY.
+
+  ENDMETHOD.
+```  
+  
 ## Exercise 20 - Adjust the Labels of the SAP Fiori Elements Application  
 
-````  
+```  
 @Metadata.layer: #CUSTOMER
 @UI: {
   headerInfo: {
@@ -261,7 +332,7 @@ annotate view ZC_425_COMPLAINT## with
   @UI.hidden: true
   LocalLastChanged;
 }
-````
+```
 
     
 
