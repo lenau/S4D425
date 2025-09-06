@@ -11,7 +11,7 @@
 1. **Task 4** Activate the Deployed Plugin for Your User --->
 
 
-## Exercise 13
+## Exercise 13 - Implement Custom Logic for your Custom Business Object  
 
 #### Determination:
 
@@ -59,7 +59,7 @@
       ).
     ENDIF.
     
-## Exercise 14  
+## Exercise 14 - Create and Use a Custom Library  
   
     SELECT SINGLE FROM d425_i_cust## 
                 FIELDS zz1_discount_##_g##
@@ -82,7 +82,7 @@
       ).
     ENDIF.
 
-## Exercise 18  
+## Exercise 18 - Create a Database Table on the SAP BTP ABAP Environment  
 
     @EndUserText.label : 'Customer complaints about invoices'
     @AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
@@ -124,7 +124,7 @@
         io_response->set_data( lt_business_data ).
 ```
 
-## Exercise 20  
+## Exercise 20 - Adjust the Labels of the SAP Fiori Elements Application  
 
 ````  
 @Metadata.layer: #CUSTOMER
