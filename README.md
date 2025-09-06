@@ -126,9 +126,10 @@
         io_response->set_data( lt_business_data ).
 ```
 
+## Exercise 20 
 <details>
-<summary>## Exercise 20 </summary>
-````  
+<summary>click</summary>
+ 
 @Metadata.layer: #CUSTOMER
 @UI: {
   headerInfo: {
@@ -257,7 +258,6 @@ annotate view ZC_425_COMPLAINT## with
   @UI.hidden: true
   LocalLastChanged;
 }
-````
 </details>
 
 ## Exercise 20  
