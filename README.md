@@ -119,10 +119,19 @@
 ```
         lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
                  )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
-        ...  
+        .
+        ...
+        .
         io_response->set_total_number_of_records( lines( lt_business_data ) ).      
         io_response->set_data( lt_business_data ).
 ```
+
+<details>
+<summary>Click to expand</summary>
+
+This content is hidden by default and will be revealed when the user clicks on the summary.
+
+</details>
 
 ## Exercise 20  
 
