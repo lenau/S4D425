@@ -187,7 +187,6 @@
         " Handle Exception
         RAISE SHORTDUMP lx_web_http_client_error.
 
-
       CATCH cx_http_dest_provider_error.
         "handle exception
 
