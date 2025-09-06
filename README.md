@@ -108,6 +108,22 @@
 
     }
 
+## Exercise 23 - Create a Console Application to Test the Service Consumption Model  
+```
+        DATA(lo_http_destination) =  cl_http_destination_provider=>create_by_cloud_destination( i_name = 'S4D_100' ).
+        ...  
+        out->write( lt_business_data ).
+```
+
+## Exercise 25 - Implement the Query Implementation Class of the Custom Entity  
+```
+        lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
+                 )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
+        ...  
+        io_response->set_total_number_of_records( lines( lt_business_data ) ).      
+        io_response->set_data( lt_business_data ).
+```
+
 ## Exercise 20  
 
 ````  
