@@ -155,18 +155,18 @@
         DATA root_filter_node TYPE REF TO /iwbep/if_cp_filter_node.
         DATA(filter_factory) = lo_request->create_filter_factory( ).
 
-        LOOP AT filter_conditions INTO DATA(filter_condition).
-          DATA(filter_node)  = filter_factory->create_by_range( iv_property_path = filter_condition-name
-                                                                it_range         = filter_condition-range ).
-          IF root_filter_node IS INITIAL.
-            root_filter_node = filter_node.
-          ELSE.
-            root_filter_node = root_filter_node->and( filter_node ).
-          ENDIF.
-        ENDLOOP.
+        IF line_exists( filter_conditions[ 1 ] ).
+          DATA(filter_factory) = lo_request->create_filter_factory( ).
 
-        IF root_filter_node IS NOT INITIAL.
-          lo_request->set_filter( root_filter_node ).
+          DATA(filter_node)  = filter_factory->create_by_range( iv_property_path = filter_conditions[ 1 ]-name
+                                                                it_range         = filter_conditions[ 1 ]-range ).
+
+          LOOP AT filter_conditions INTO DATA(filter_condition) FROM 2.
+            filter_node->and(  filter_factory->create_by_range( iv_property_path = filter_condition-name
+                                                                it_range         = filter_condition-range ) ).
+          ENDLOOP.
+
+          lo_request->set_filter( filter_node ).
         ENDIF.
 
         DATA business_data TYPE TABLE OF zcl_sc_invoices_##=>tys_zz_1_customerinvoice_##_ty.
