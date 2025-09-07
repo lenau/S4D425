@@ -132,7 +132,9 @@
 
 ```  
   METHOD if_rap_query_provider~select.
+
     TRY.
+
         DATA(lo_request) =
           /iwbep/cl_cp_factory_remote=>create_v2_remote_proxy(
             EXPORTING
@@ -155,12 +157,12 @@
         IF line_exists( filter_conditions[ 1 ] ).
           DATA(filter_factory) = lo_request->create_filter_factory( ).
 
-          DATA(filter_node)  = filter_factory->create_by_range( iv_property_path = filter_conditions[ 1 ]-name
-                                                                it_range         = filter_conditions[ 1 ]-range ).
+          DATA(filter_node) = filter_factory->create_by_range( iv_property_path = filter_conditions[ 1 ]-name
+                                                               it_range         = filter_conditions[ 1 ]-range ).
 
           LOOP AT filter_conditions INTO DATA(filter_condition) FROM 2.
-            filter_node->and(  filter_factory->create_by_range( iv_property_path = filter_condition-name
-                                                                it_range         = filter_condition-range ) ).
+            filter_node->and( filter_factory->create_by_range( iv_property_path = filter_condition-name
+                                                               it_range         = filter_condition-range ) ).
           ENDLOOP.
 
           lo_request->set_filter( filter_node ).
@@ -184,12 +186,15 @@
         " Handle Exception
         RAISE SHORTDUMP lx_web_http_client_error.
 
+
       CATCH cx_http_dest_provider_error.
         "handle exception
 
       CATCH cx_rap_query_filter_no_range.
         "handle exception
+
     ENDTRY.
+
   ENDMETHOD.
 ```  
   
