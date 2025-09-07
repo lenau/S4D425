@@ -152,9 +152,6 @@
         lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
                  )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
 
-        DATA root_filter_node TYPE REF TO /iwbep/if_cp_filter_node.
-        DATA(filter_factory) = lo_request->create_filter_factory( ).
-
         IF line_exists( filter_conditions[ 1 ] ).
           DATA(filter_factory) = lo_request->create_filter_factory( ).
 
