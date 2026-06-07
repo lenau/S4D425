@@ -110,7 +110,7 @@
 
 ## Exercise 23 - Create a Console Application to Test the Service Consumption Model  
 ```
-        DATA(lo_http_destination) =  cl_http_destination_provider=>create_by_cloud_destination( 'S4D_100' ).
+        DATA(lo_http_destination) =  cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ).
         ...
         ...  
         ...  
@@ -143,7 +143,7 @@
                                             proxy_model_version = '0001' )
 
               io_http_client = cl_web_http_client_manager=>create_by_http_destination(
-                                 cl_http_destination_provider=>create_by_cloud_destination( 'S4D_100' ) )
+                                 cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ) )
 
               iv_relative_service_root = '/sap/opu/odata/sap/ZZ1_CUSTOMERINVOICE##_CDS/'
 
