@@ -1,11 +1,4 @@
 # S4D425
-
-#### Table of Contents
-
-- [Underline](#ex23)
-- [Indent](#indent)
-- [Center](#center)
-- [Color](#color)
   
 <!--- ## Exercise 4
 
@@ -17,11 +10,9 @@
 1. **Task 3 - 4.** Deploy the SAP Fiori Launchpad Plugin to the ABAP S4D System
 1. **Task 4** Activate the Deployed Plugin for Your User --->
 
-# 2 S4D425 
-
 ## Exercise 13 - Implement Custom Logic for your Custom Business Object  
 
-#### Determination:
+#### Determination
 
     * set Invoice ID
     IF customerinvoice##-id IS INITIAL.
@@ -38,7 +29,7 @@
                     INTO @customerinvoice##-customername.
     ENDIF.
 
-#### Validation:
+#### Validation
 
     * decide about save rejection
     * Validation Messages
@@ -48,7 +39,7 @@
     valid   = COND #( WHEN message IS INITIAL THEN abap_true
                                               ELSE abap_false ).
     
-#### Action:
+#### Action
 
 **Label**: Apply Customer Discount  
 **Identifier**: ApplyCustomerDiscount
@@ -116,13 +107,31 @@
 
     }
 
-## Exercise 23 - Create a Console Application to Test the Service Consumption Model {#ex23}  
+## Exercise 23 - Create a Console Application to Test the Service Consumption Model   
 ```
         DATA(lo_http_destination) =  cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ).
         ...
         ...  
         ...  
         out->write( lt_business_data ).
+```
+
+## Exercise 24 - Create a Custom Entity   
+```
+@EndUserText.label: 'Custom entity for invoices from S4D'
+@ObjectModel.query.implementedBy: 'ABAP:ZCL_CE_D425_INVOICES_20'
+define custom entity ZCE_D425_INVOICES_20
+{
+  key SAP_UUID      : sysuuid_x16;
+      ID            : abap.numc( 10 );
+      CUSTOMER_ID   : abap.numc( 8 );
+      CUSTOMER_NAME : abap.char( 25 );
+      @Semantics.amount.currencyCode: 'AMOUNT_C'
+      AMOUNT_V      : abap.curr( 16, 2 );
+      @Semantics.currencyCode: true
+      AMOUNT_C      : abap.cuky;
+
+}
 ```
 
 ## Exercise 25 - Implement the Query Implementation Class of the Custom Entity  
