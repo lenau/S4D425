@@ -107,113 +107,6 @@
 
     }
 
-## Exercise 23 - Create a Console Application to Test the Service Consumption Model   
-```
-        DATA(lo_http_destination) =  cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ).
-        ...
-        ...  
-        ...  
-        out->write( lt_business_data ).
-```
-
-## Exercise 24 - Create a Custom Entity   
-```
-@EndUserText.label: 'Custom entity for invoices from S4D'
-@ObjectModel.query.implementedBy: 'ABAP:ZCL_CE_D425_INVOICES_20'
-define custom entity ZCE_D425_INVOICES_20
-{
-  key SAP_UUID      : sysuuid_x16;
-      ID            : abap.numc( 10 );
-      CUSTOMER_ID   : abap.numc( 8 );
-      CUSTOMER_NAME : abap.char( 25 );
-      @Semantics.amount.currencyCode: 'AMOUNT_C'
-      AMOUNT_V      : abap.curr( 16, 2 );
-      @Semantics.currencyCode: true
-      AMOUNT_C      : abap.cuky;
-
-}
-```
-
-## Exercise 25 - Implement the Query Implementation Class of the Custom Entity  
-```
-        DATA(sort_order)            = io_request->get_sort_elements( ).
-        DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
-        lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
-                 )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
-        ...  
-        ...  
-        ...  
-        io_response->set_total_number_of_records( lines( lt_business_data ) ).      
-        io_response->set_data( lt_business_data ).
-```
-
-```  
-  METHOD if_rap_query_provider~select.
-
-    TRY.
-
-        DATA(lo_request) =
-          /iwbep/cl_cp_factory_remote=>create_v2_remote_proxy(
-            EXPORTING
-              is_proxy_model_key = VALUE #( repository_id       = 'DEFAULT'
-                                            proxy_model_id      = 'ZSC_INVOICES_##'
-                                            proxy_model_version = '0001' )
-
-              io_http_client = cl_web_http_client_manager=>create_by_http_destination(
-                                 cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ) )
-
-              iv_relative_service_root = '/sap/opu/odata/sap/ZZ1_CUSTOMERINVOICE##_CDS/'
-
-                )->create_resource_for_entity_set( 'ZZ_1_CUSTOMERINVOICE_##' )->create_request_for_read( ).
-
-        DATA(sort_order)            = io_request->get_sort_elements( ).
-        DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
-        lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
-                 )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
-
-        IF line_exists( filter_conditions[ 1 ] ).
-          DATA(filter_factory) = lo_request->create_filter_factory( ).
-
-          DATA(filter_node) = filter_factory->create_by_range( iv_property_path = filter_conditions[ 1 ]-name
-                                                               it_range         = filter_conditions[ 1 ]-range ).
-
-          LOOP AT filter_conditions INTO DATA(filter_condition) FROM 2.
-            filter_node->and( filter_factory->create_by_range( iv_property_path = filter_condition-name
-                                                               it_range         = filter_condition-range ) ).
-          ENDLOOP.
-
-          lo_request->set_filter( filter_node ).
-        ENDIF.
-
-        DATA business_data TYPE TABLE OF zcl_sc_invoices_##=>tys_zz_1_customerinvoice_##_ty.
-        DATA(response) = lo_request->execute( ).
-        response->get_business_data( IMPORTING et_business_data = business_data ).
-
-        io_response->set_total_number_of_records( lines( business_data ) ).
-        io_response->set_data( business_data ).
-
-      CATCH /iwbep/cx_cp_remote INTO DATA(lx_remote).
-        " Handle remote Exception
-        " It contains details about the problems of your http(s) connection
-
-      CATCH /iwbep/cx_gateway INTO DATA(lx_gateway).
-        " Handle Exception
-
-      CATCH cx_web_http_client_error INTO DATA(lx_web_http_client_error).
-        " Handle Exception
-        RAISE SHORTDUMP lx_web_http_client_error.
-
-
-      CATCH cx_http_dest_provider_error.
-        "handle exception
-
-      CATCH cx_rap_query_filter_no_range.
-        "handle exception
-
-    ENDTRY.
-
-  ENDMETHOD.
-```  
   
 ## Exercise 20 - Adjust the Labels of the SAP Fiori Elements Application  
 
@@ -346,6 +239,123 @@ annotate view ZC_425_COMPLAINT## with
   @UI.hidden: true
   LocalLastChanged;
 }
+```
+
+## Exercise 23 - Create a Console Application to Test the Service Consumption Model   
+```
+        DATA(lo_http_destination) =  cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ).
+        ...
+        ...  
+        ...  
+        out->write( lt_business_data ).
+```
+
+## Exercise 24 - Create a Custom Entity   
+```
+@EndUserText.label: 'Custom entity for invoices from S4D'
+@ObjectModel.query.implementedBy: 'ABAP:ZCL_CE_D425_INVOICES_##'
+define custom entity ZCE_D425_INVOICES_##
+{
+  key SAP_UUID      : sysuuid_x16;
+      ID            : abap.numc( 10 );
+      CUSTOMER_ID   : abap.numc( 8 );
+      CUSTOMER_NAME : abap.char( 25 );
+      @Semantics.amount.currencyCode: 'AMOUNT_C'
+      AMOUNT_V      : abap.curr( 16, 2 );
+      @Semantics.currencyCode: true
+      AMOUNT_C      : abap.cuky;
+
+}
+```
+
+## Exercise 25 - Implement the Query Implementation Class of the Custom Entity  
+```
+        DATA(sort_order)            = io_request->get_sort_elements( ).
+        DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
+        lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
+                 )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
+        ...  
+        ...  
+        ...  
+        io_response->set_total_number_of_records( lines( lt_business_data ) ).      
+        io_response->set_data( lt_business_data ).
+```
+
+```  
+  METHOD if_rap_query_provider~select.
+
+    TRY.
+
+        DATA(lo_request) =
+          /iwbep/cl_cp_factory_remote=>create_v2_remote_proxy(
+            EXPORTING
+              is_proxy_model_key = VALUE #( repository_id       = 'DEFAULT'
+                                            proxy_model_id      = 'ZSC_INVOICES_##'
+                                            proxy_model_version = '0001' )
+
+              io_http_client = cl_web_http_client_manager=>create_by_http_destination(
+                                 cl_http_destination_provider=>create_by_cloud_destination( 'S4D_BAS' ) )
+
+              iv_relative_service_root = '/sap/opu/odata/sap/ZZ1_CUSTOMERINVOICE##_CDS/'
+
+                )->create_resource_for_entity_set( 'ZZ_1_CUSTOMERINVOICE_##' )->create_request_for_read( ).
+
+        DATA(sort_order)            = io_request->get_sort_elements( ).
+        DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
+        lo_request->set_top(  CONV i( io_request->get_paging( )->get_page_size( ) )
+                 )->set_skip( CONV i( io_request->get_paging( )->get_offset( ) ) ).
+
+        IF line_exists( filter_conditions[ 1 ] ).
+          DATA(filter_factory) = lo_request->create_filter_factory( ).
+
+          DATA(filter_node) = filter_factory->create_by_range( iv_property_path = filter_conditions[ 1 ]-name
+                                                               it_range         = filter_conditions[ 1 ]-range ).
+
+          LOOP AT filter_conditions INTO DATA(filter_condition) FROM 2.
+            filter_node->and( filter_factory->create_by_range( iv_property_path = filter_condition-name
+                                                               it_range         = filter_condition-range ) ).
+          ENDLOOP.
+
+          lo_request->set_filter( filter_node ).
+        ENDIF.
+
+        DATA business_data TYPE TABLE OF zcl_sc_invoices_##=>tys_zz_1_customerinvoice_##_ty.
+        DATA(response) = lo_request->execute( ).
+        response->get_business_data( IMPORTING et_business_data = business_data ).
+
+        io_response->set_total_number_of_records( lines( business_data ) ).
+        io_response->set_data( business_data ).
+
+      CATCH /iwbep/cx_cp_remote INTO DATA(lx_remote).
+        " Handle remote Exception
+        " It contains details about the problems of your http(s) connection
+
+      CATCH /iwbep/cx_gateway INTO DATA(lx_gateway).
+        " Handle Exception
+
+      CATCH cx_web_http_client_error INTO DATA(lx_web_http_client_error).
+        " Handle Exception
+        RAISE SHORTDUMP lx_web_http_client_error.
+
+
+      CATCH cx_http_dest_provider_error.
+        "handle exception
+
+      CATCH cx_rap_query_filter_no_range.
+        "handle exception
+
+    ENDTRY.
+
+  ENDMETHOD.
+```  
+
+## Exercise 26 - Expose the Custom Entity via the Service Definition and Integrate It as Value Help into the Base Application   
+```
+      @Consumption.valueHelpDefinition:
+      [{ entity : { name: 'ZCE_D425_INVOICES_##', element: 'ID' },
+         additionalBinding :
+                 [{ localElement: 'CustomerID',   element: 'CUSTOMER_ID' },
+                  { localElement: 'CustomerName', element: 'CUSTOMER_NAME' }] }]
 ```
 
     
