@@ -281,6 +281,7 @@ define custom entity ZCE_D425_INVOICES_##
         io_response->set_data( lt_business_data ).
 ```
 
+#### with Filter conditions
 ```  
   METHOD if_rap_query_provider~select.
 
