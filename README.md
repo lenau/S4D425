@@ -259,6 +259,8 @@ define custom entity ZCE_D425_INVOICES_##
 ```
 
 ## Exercise 25 - Implement the Query Implementation Class of the Custom Entity  
+
+#### without Filter conditions
 ```
         DATA(sort_order)            = io_request->get_sort_elements( ).
         DATA(filter_conditions)     = io_request->get_filter( )->get_as_ranges( ).
